@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>table</title>
+		<style>
+			#table1{
+				/*合并单元格*/
+				margin-top: 10px;
+				border-collapse: collapse;
+			}
+			td{
+				/*单元格样式*/
+				border:2px solid #ababab;
+				text-align: center;
+			}
+			tr{
+				line-height: 50px;
+			}
+			a{
+				/*设计删除按钮*/
+				text-decoration: none;
+				color: white;
+				background: blue;
+				border-radius: 25px;
+				border: 2px solid blue;
+				border-width: 8px;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="div1">
+			name:<input id="oNmae" name="oNmae" placeholder="please input your name"/>
+			age:<input id="age" name="age" placeholder="please input your age"/>
+			<button id="add">添加</button>
+			<button id="paixu">排序</button>
+			<button id="clearTable">清空表格</button>
+		</div>
+		
+		<table id="table1" width="500px">
+			<thead>
+				<td>ID</td>
+				<td>name</td>
+				<td>age</td>
+				<td>操作</td>
+			</thead>
+			<tbody>
+				<!--<tr>
+					<td>1</td>
+					<td>张三</td>
+					<td>21</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>李四</td>
+					<td>22</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>赵六</td>
+					<td>23</td>
+					<td></td>
+				</tr>-->
+			</tbody>
+		</table>
+		<script>
+			//添加按钮
+			var add = document.getElementById("add");
+			//姓名文本框
+			var oNmae = document.getElementById("oNmae");
+			//年龄文本框
+			var age = document.getElementById("age");
+			//表格
+			var table = document.getElementById("table1");
+			//排序按钮
+			var paixu = document.getElementById("paixu");
+			var clearTable = document.getElementById("clearTable");
+			
+			var rowId = table.tBodies[0].rows.length;
+			var tableTbody = table.getElementsByTagName("tbody")[0];
+			var fragment = document.createDocumentFragment();
+			
+			//鼠标移到文本框后久清除文本值
+			oNmae.onmouseover = function(){
+				oNmae.value = "";
+			}
+			age.onmouseover = function(){
+				age.value = "";
+			}
+			
+			//添加按钮的监听事件
+			add.addEventListener('click',function(){
+				var rowIdNew = (rowId=rowId+1);
+				var tr = document.createElement("tr");
+				tr.id = rowIdNew;
+				var td = null;
+				
+				for(var i=0;i<4;i++){
+					td = document.createElement("td");
+					switch(i){
+						case 0:
+							td.innerHTML = rowIdNew;
+							fragment.appendChild(td);
+							break;
+						case 1:
+							td.innerHTML = oNmae.value;
+							fragment.appendChild(td);
+							break;
+						case 2:
+							td.innerHTML = age.value;
+							fragment.appendChild(td);
+							break;
+						default:
+							td.innerHTML = '<a href="javascript:;">删除</a>';
+							fragment.appendChild(td);
+							break;
+					}
+				}
+				tr.appendChild(fragment);
+				tableTbody.appendChild(tr);
+				tr.getElementsByTagName("a")[0].onclick = function(){
+					tableTbody.removeChild(document.getElementById(this.parentNode.parentNode.id));
+				};
+				
+				//鼠标移入移出
+				var trNum = tableTbody.rows.length;
+				for(var j=0;j<trNum;j++){
+					tableTbody.rows[j].onmouseover = function(){
+						this.style.background = "red";
+					}
+					tableTbody.rows[j].onmouseout = function(){
+						this.style.background = "white";
+					}
+				}
+			});
+			
+			paixu.addEventListener('click',function(){
+				var trArray = new Array();
+				var trNum = tableTbody.rows.length;
+				for(var k=0;k<trNum;k++){
+					trArray[k] = tableTbody.rows[k];
+				}
+				
+				trArray.sort(function(tr1,tr2){
+					var n1 = parseInt(tr1.cells[2].innerHTML);
+					var n2 = parseInt(tr2.cells[2].innerHTML);
+					return n1-n2;
+				});
+				//alert(trArray.toString());
+				for(var g=0;g<trArray.length;g++){
+					tableTbody.appendChild(trArray[g]);
+				}
+			});
+			
+			clearTable.addEventListener('click',function(){
+				tableTbody.innerHTML = "";
+				rowId = 0;
+			});
+		</script>
+	</body>
+</html>
